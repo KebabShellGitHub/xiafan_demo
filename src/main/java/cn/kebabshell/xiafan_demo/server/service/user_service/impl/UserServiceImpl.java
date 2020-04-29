@@ -39,9 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserAuth findByNameForAuth(String username) {
         //待优化
-        // 想法：第一次查，检查redis里面有没有，有就直接返回，没有就查数据库，查完存进redis，过期时间与token一致
-
-
+        // 想法：第一次查询，检查redis里面有没有，有就直接返回，没有就查数据库，查完存进redis，过期时间与token一致
 
         //取到user
         User user = findByName(username);
