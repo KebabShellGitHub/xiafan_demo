@@ -3,9 +3,10 @@ package cn.kebabshell.xiafan_demo.common.mapper;
 import cn.kebabshell.xiafan_demo.common.pojo.UserFollow;
 import cn.kebabshell.xiafan_demo.common.pojo.UserFollowExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface UserFollowMapper {
     long countByExample(UserFollowExample example);
 

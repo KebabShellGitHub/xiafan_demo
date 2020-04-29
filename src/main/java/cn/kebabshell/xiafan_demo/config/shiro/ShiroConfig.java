@@ -21,7 +21,7 @@ import java.util.Map;
  * on 2020/4/28 下午 05:22
  */
 @Configuration
-public class MyShiroConfig {
+public class ShiroConfig {
     //1、创建realm交给Spring
     @Bean
     public CustomRealm getCustomRealm() {

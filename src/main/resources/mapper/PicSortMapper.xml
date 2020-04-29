@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kebabshell.common.mapper.PicSortMapper">
-  <resultMap id="BaseResultMap" type="com.kebabshell.common.pojo.PicSort">
+<mapper namespace="cn.kebabshell.xiafan_demo.common.mapper.PicSortMapper">
+  <resultMap id="BaseResultMap" type="cn.kebabshell.xiafan_demo.common.pojo.PicSort">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pic_id" jdbcType="BIGINT" property="picId" />
     <result column="sort_id" jdbcType="BIGINT" property="sortId" />
@@ -68,7 +68,7 @@
   <sql id="Base_Column_List">
     id, pic_id, sort_id, create_time
   </sql>
-  <select id="selectByExample" parameterType="com.kebabshell.common.pojo.PicSortExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSortExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -92,19 +92,19 @@
     delete from pic_sort
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.kebabshell.common.pojo.PicSortExample">
+  <delete id="deleteByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSortExample">
     delete from pic_sort
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.kebabshell.common.pojo.PicSort">
+  <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSort">
     insert into pic_sort (id, pic_id, sort_id, 
       create_time)
     values (#{id,jdbcType=BIGINT}, #{picId,jdbcType=BIGINT}, #{sortId,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.kebabshell.common.pojo.PicSort">
+  <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSort">
     insert into pic_sort
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -135,7 +135,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.kebabshell.common.pojo.PicSortExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSortExample" resultType="java.lang.Long">
     select count(*) from pic_sort
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -171,7 +171,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kebabshell.common.pojo.PicSort">
+  <update id="updateByPrimaryKeySelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSort">
     update pic_sort
     <set>
       <if test="picId != null">
@@ -186,7 +186,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kebabshell.common.pojo.PicSort">
+  <update id="updateByPrimaryKey" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSort">
     update pic_sort
     set pic_id = #{picId,jdbcType=BIGINT},
       sort_id = #{sortId,jdbcType=BIGINT},

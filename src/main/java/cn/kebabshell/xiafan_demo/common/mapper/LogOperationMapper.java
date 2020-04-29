@@ -3,9 +3,10 @@ package cn.kebabshell.xiafan_demo.common.mapper;
 import cn.kebabshell.xiafan_demo.common.pojo.LogOperation;
 import cn.kebabshell.xiafan_demo.common.pojo.LogOperationExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface LogOperationMapper {
     long countByExample(LogOperationExample example);
 

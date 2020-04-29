@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kebabshell.common.mapper.VideoCommentLikeMapper">
-  <resultMap id="BaseResultMap" type="com.kebabshell.common.pojo.VideoCommentLike">
+<mapper namespace="cn.kebabshell.xiafan_demo.common.mapper.VideoCommentLikeMapper">
+  <resultMap id="BaseResultMap" type="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLike">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="comment_id" jdbcType="BIGINT" property="commentId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
@@ -68,7 +68,7 @@
   <sql id="Base_Column_List">
     id, comment_id, user_id, create_time
   </sql>
-  <select id="selectByExample" parameterType="com.kebabshell.common.pojo.VideoCommentLikeExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLikeExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -92,19 +92,19 @@
     delete from video_comment_like
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.kebabshell.common.pojo.VideoCommentLikeExample">
+  <delete id="deleteByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLikeExample">
     delete from video_comment_like
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.kebabshell.common.pojo.VideoCommentLike">
+  <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLike">
     insert into video_comment_like (id, comment_id, user_id, 
       create_time)
     values (#{id,jdbcType=BIGINT}, #{commentId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.kebabshell.common.pojo.VideoCommentLike">
+  <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLike">
     insert into video_comment_like
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -135,7 +135,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.kebabshell.common.pojo.VideoCommentLikeExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLikeExample" resultType="java.lang.Long">
     select count(*) from video_comment_like
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -171,7 +171,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kebabshell.common.pojo.VideoCommentLike">
+  <update id="updateByPrimaryKeySelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLike">
     update video_comment_like
     <set>
       <if test="commentId != null">
@@ -186,7 +186,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kebabshell.common.pojo.VideoCommentLike">
+  <update id="updateByPrimaryKey" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLike">
     update video_comment_like
     set comment_id = #{commentId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},

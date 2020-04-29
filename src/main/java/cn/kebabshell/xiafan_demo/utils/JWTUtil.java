@@ -12,7 +12,7 @@ import java.util.Date;
  * on 2020/4/21 下午 07:18
  */
 public class JWTUtil {
-    private static long ttl = 1000 * 60 * 10;//失效时间=十分钟
+    private static long ttl = 1000 * 60 * 20;//失效时间=二十分钟
     private static String key = "test-key";
 
     /**

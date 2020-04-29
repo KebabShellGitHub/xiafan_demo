@@ -3,9 +3,10 @@ package cn.kebabshell.xiafan_demo.common.mapper;
 import cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLike;
 import cn.kebabshell.xiafan_demo.common.pojo.VideoCommentLikeExample;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+@Repository
 public interface VideoCommentLikeMapper {
     long countByExample(VideoCommentLikeExample example);
 

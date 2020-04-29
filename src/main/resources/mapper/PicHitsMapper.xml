@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kebabshell.common.mapper.PicHitsMapper">
-  <resultMap id="BaseResultMap" type="com.kebabshell.common.pojo.PicHits">
+<mapper namespace="cn.kebabshell.xiafan_demo.common.mapper.PicHitsMapper">
+  <resultMap id="BaseResultMap" type="cn.kebabshell.xiafan_demo.common.pojo.PicHits">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="ip" jdbcType="VARCHAR" property="ip" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
@@ -70,7 +70,7 @@
   <sql id="Base_Column_List">
     id, ip, user_id, pic_id, location, create_time
   </sql>
-  <select id="selectByExample" parameterType="com.kebabshell.common.pojo.PicHitsExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHitsExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -94,13 +94,13 @@
     delete from pic_hits
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.kebabshell.common.pojo.PicHitsExample">
+  <delete id="deleteByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHitsExample">
     delete from pic_hits
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.kebabshell.common.pojo.PicHits">
+  <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHits">
     insert into pic_hits (id, ip, user_id, 
       pic_id, location, create_time
       )
@@ -108,7 +108,7 @@
       #{picId,jdbcType=BIGINT}, #{location,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.kebabshell.common.pojo.PicHits">
+  <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHits">
     insert into pic_hits
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -151,7 +151,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.kebabshell.common.pojo.PicHitsExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHitsExample" resultType="java.lang.Long">
     select count(*) from pic_hits
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -195,7 +195,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kebabshell.common.pojo.PicHits">
+  <update id="updateByPrimaryKeySelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHits">
     update pic_hits
     <set>
       <if test="ip != null">
@@ -216,7 +216,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kebabshell.common.pojo.PicHits">
+  <update id="updateByPrimaryKey" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHits">
     update pic_hits
     set ip = #{ip,jdbcType=VARCHAR},
       user_id = #{userId,jdbcType=BIGINT},

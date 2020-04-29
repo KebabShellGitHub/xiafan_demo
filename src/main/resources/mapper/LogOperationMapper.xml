@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kebabshell.common.mapper.LogOperationMapper">
-  <resultMap id="BaseResultMap" type="com.kebabshell.common.pojo.LogOperation">
+<mapper namespace="cn.kebabshell.xiafan_demo.common.mapper.LogOperationMapper">
+  <resultMap id="BaseResultMap" type="cn.kebabshell.xiafan_demo.common.pojo.LogOperation">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="ip" jdbcType="VARCHAR" property="ip" />
@@ -70,7 +70,7 @@
   <sql id="Base_Column_List">
     id, url, ip, user_id, location, create_time
   </sql>
-  <select id="selectByExample" parameterType="com.kebabshell.common.pojo.LogOperationExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.LogOperationExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -94,19 +94,19 @@
     delete from log_operation
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.kebabshell.common.pojo.LogOperationExample">
+  <delete id="deleteByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.LogOperationExample">
     delete from log_operation
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.kebabshell.common.pojo.LogOperation">
+  <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.LogOperation">
     insert into log_operation (id, url, ip, user_id, 
       location, create_time)
     values (#{id,jdbcType=BIGINT}, #{url,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
       #{location,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.kebabshell.common.pojo.LogOperation">
+  <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.LogOperation">
     insert into log_operation
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -149,7 +149,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.kebabshell.common.pojo.LogOperationExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.LogOperationExample" resultType="java.lang.Long">
     select count(*) from log_operation
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -193,7 +193,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.kebabshell.common.pojo.LogOperation">
+  <update id="updateByPrimaryKeySelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.LogOperation">
     update log_operation
     <set>
       <if test="url != null">
@@ -214,7 +214,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.kebabshell.common.pojo.LogOperation">
+  <update id="updateByPrimaryKey" parameterType="cn.kebabshell.xiafan_demo.common.pojo.LogOperation">
     update log_operation
     set url = #{url,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR},
