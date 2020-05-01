@@ -10,6 +10,7 @@ public enum ResultCode {
     NO_LOGIN(20002, "用户未登录"),
     TOKEN_EXPIRED(20003, "登录身份已过期"),
     PWD_ERROR(20004, "密码错误"),
+    SYS_ERROR(20006, "系统错误"),
     NO_USER(20001, "用户不存在");
 
     // 结果状态码

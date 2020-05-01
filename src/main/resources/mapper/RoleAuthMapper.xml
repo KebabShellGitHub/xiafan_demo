@@ -99,17 +99,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.RoleAuth">
-    insert into role_auth (id, role_id, auth_id, 
-      create_time)
-    values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{authId,jdbcType=BIGINT}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into role_auth (role_id, auth_id, create_time
+      )
+    values (#{roleId,jdbcType=BIGINT}, #{authId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.RoleAuth">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into role_auth
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="roleId != null">
         role_id,
       </if>
@@ -121,9 +124,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="roleId != null">
         #{roleId,jdbcType=BIGINT},
       </if>

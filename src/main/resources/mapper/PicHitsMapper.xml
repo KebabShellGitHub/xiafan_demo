@@ -101,19 +101,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHits">
-    insert into pic_hits (id, ip, user_id, 
-      pic_id, location, create_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{ip,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
-      #{picId,jdbcType=BIGINT}, #{location,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pic_hits (ip, user_id, pic_id, 
+      location, create_time)
+    values (#{ip,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, #{picId,jdbcType=BIGINT}, 
+      #{location,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicHits">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into pic_hits
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="ip != null">
         ip,
       </if>
@@ -131,9 +132,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="ip != null">
         #{ip,jdbcType=VARCHAR},
       </if>

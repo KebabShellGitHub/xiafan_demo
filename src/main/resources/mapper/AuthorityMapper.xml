@@ -99,17 +99,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.Authority">
-    insert into authority (id, operation, create_time, 
-      update_time)
-    values (#{id,jdbcType=BIGINT}, #{operation,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into authority (operation, create_time, update_time
+      )
+    values (#{operation,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.Authority">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into authority
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="operation != null">
         operation,
       </if>
@@ -121,9 +124,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="operation != null">
         #{operation,jdbcType=VARCHAR},
       </if>

@@ -99,17 +99,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSort">
-    insert into pic_sort (id, pic_id, sort_id, 
-      create_time)
-    values (#{id,jdbcType=BIGINT}, #{picId,jdbcType=BIGINT}, #{sortId,jdbcType=BIGINT}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pic_sort (pic_id, sort_id, create_time
+      )
+    values (#{picId,jdbcType=BIGINT}, #{sortId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicSort">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into pic_sort
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="picId != null">
         pic_id,
       </if>
@@ -121,9 +124,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="picId != null">
         #{picId,jdbcType=BIGINT},
       </if>

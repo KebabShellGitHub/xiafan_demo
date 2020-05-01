@@ -48,6 +48,32 @@ public class UserController {
     }
 
     /**
+     * 注销
+     * @return
+     */
+    @GetMapping("/logout")
+    @RequiresRoles("general")
+    public MyResult logout(){
+        //让前端删除token
+        return new MyResult(ResultCode.SUCCESS);
+    }
+
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
+    @PostMapping("/register")
+    public MyResult register(User user){
+        //数据校验交给前端
+        User newUser = service.register(user);
+        return new MyResult(ResultCode.SUCCESS.getCode(), "注册成功", newUser);
+    }
+
+
+
+
+    /**
      * 测试
      * @return
      */

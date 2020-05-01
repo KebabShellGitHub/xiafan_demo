@@ -21,4 +21,11 @@ public interface UserService {
      * @return
      */
     UserAuth findByNameForAuth(String username);
+
+    /**
+     * 普通用户注册
+     * @param user
+     * @return
+     */
+    User register(User user);
 }

@@ -99,17 +99,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicCommentLike">
-    insert into pic_comment_like (id, comment_id, user_id, 
-      create_time)
-    values (#{id,jdbcType=BIGINT}, #{commentId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{createTime,jdbcType=TIMESTAMP})
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pic_comment_like (comment_id, user_id, create_time
+      )
+    values (#{commentId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.PicCommentLike">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into pic_comment_like
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="commentId != null">
         comment_id,
       </if>
@@ -121,9 +124,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="commentId != null">
         #{commentId,jdbcType=BIGINT},
       </if>

@@ -4,11 +4,14 @@ import cn.kebabshell.xiafan_demo.common.custom.UserAuth;
 import cn.kebabshell.xiafan_demo.common.custom.RoleAuth;
 import cn.kebabshell.xiafan_demo.common.mapper.*;
 import cn.kebabshell.xiafan_demo.common.pojo.*;
+import cn.kebabshell.xiafan_demo.handler.exception.MyNoUserException;
+import cn.kebabshell.xiafan_demo.handler.exception.MyRegisterException;
 import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,5 +78,22 @@ public class UserServiceImpl implements UserService {
 
 
         return new UserAuth(user, roleAuths);
+    }
+
+    @Override
+    public User register(User user) {
+        Date date = new Date();
+        user.setCreateTime(date);
+        int insert = userMapper.insertSelective(user);
+        UserRole userRole = new UserRole();
+        userRole.setUserId(user.getId());
+        //默认普通用户，角色id为2的是普通用户
+        userRole.setRoleId(2L);
+        userRole.setCreateTime(date);
+        int insert2 = userRoleMapper.insertSelective(userRole);
+        if (insert <= 0 || insert2 <= 0){
+            throw new MyRegisterException("insert error");
+        }
+        return user;
     }
 }
