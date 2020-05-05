@@ -9,6 +9,7 @@ import cn.kebabshell.xiafan_demo.handler.exception.MyRegisterException;
 import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,6 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User register(User user) {
         Date date = new Date();
         user.setCreateTime(date);
@@ -95,5 +97,42 @@ public class UserServiceImpl implements UserService {
             throw new MyRegisterException("insert error");
         }
         return user;
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteById(Long id) {
+        //根据id删除用户表
+        userMapper.deleteByPrimaryKey(id);
+        //根据id删除用户角色表
+        //条件
+        UserRoleExample userRoleExample = new UserRoleExample();
+        UserRoleExample.Criteria criteria = userRoleExample.createCriteria();
+        criteria.andUserIdEqualTo(id);
+        userRoleMapper.deleteByExample(userRoleExample);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteByName(String name) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andNameEqualTo(name);
+
+        //拿到id
+        User user = userMapper.selectByExample(userExample).get(0);
+        Long id = user.getId();
+
+        //删除用户表
+        userMapper.deleteByPrimaryKey(id);
+
+        UserRoleExample userRoleExample = new UserRoleExample();
+        UserRoleExample.Criteria criteria1 = userRoleExample.createCriteria();
+        criteria1.andUserIdEqualTo(id);
+        //删除用户角色表
+        userRoleMapper.deleteByExample(userRoleExample);
+
+        return true;
     }
 }

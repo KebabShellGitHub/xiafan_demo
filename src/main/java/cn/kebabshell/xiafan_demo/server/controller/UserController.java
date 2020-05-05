@@ -8,15 +8,12 @@ import cn.kebabshell.xiafan_demo.utils.JWTUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by KebabShell
  * on 2020/4/25 下午 02:38
- *
+ * <p>
  * 用户控制器
  */
 @RestController
@@ -27,6 +24,7 @@ public class UserController {
 
     /**
      * 登录
+     *
      * @param user
      * @return
      */
@@ -49,32 +47,33 @@ public class UserController {
 
     /**
      * 注销
+     *
      * @return
      */
     @GetMapping("/logout")
     @RequiresRoles("general")
-    public MyResult logout(){
+    public MyResult logout() {
         //让前端删除token
         return new MyResult(ResultCode.SUCCESS);
     }
 
     /**
      * 注册
+     *
      * @param user
      * @return
      */
     @PostMapping("/register")
-    public MyResult register(User user){
+    public MyResult register(User user) {
         //数据校验交给前端
         User newUser = service.register(user);
         return new MyResult(ResultCode.SUCCESS.getCode(), "注册成功", newUser);
     }
 
 
-
-
     /**
      * 测试
+     *
      * @return
      */
     @RequiresRoles("root")
@@ -85,4 +84,27 @@ public class UserController {
         return new MyResult(ResultCode.SUCCESS);
     }
 
+    /**
+     * 删除用户
+     * @param id
+     * @param name
+     * @return
+     */
+    @RequiresRoles("root")
+    @PostMapping("/delete")
+    public MyResult deleteByIdOrName(Long id, String name) {
+        if (id != null) {
+            if (service.deleteById(id))
+                return new MyResult(ResultCode.SUCCESS);
+            else
+                return new MyResult(ResultCode.SYS_ERROR);
+        } else if (name != null){
+            if (service.deleteByName(name))
+                return new MyResult(ResultCode.SUCCESS);
+            else
+                return new MyResult(ResultCode.SYS_ERROR);
+        } else {
+            return new MyResult(ResultCode.SYS_ERROR, "无效参数");
+        }
+    }
 }

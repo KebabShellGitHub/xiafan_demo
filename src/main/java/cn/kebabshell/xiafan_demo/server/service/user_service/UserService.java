@@ -28,4 +28,18 @@ public interface UserService {
      * @return
      */
     User register(User user);
+
+    /**
+     * 根据id删除用户
+     * @param id
+     * @return
+     */
+    boolean deleteById(Long id);
+
+    /**
+     * 根据name删除用户
+     * @param name
+     * @return
+     */
+    boolean deleteByName(String name);
 }
