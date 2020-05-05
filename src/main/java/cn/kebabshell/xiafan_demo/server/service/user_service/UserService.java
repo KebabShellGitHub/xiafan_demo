@@ -42,4 +42,6 @@ public interface UserService {
      * @return
      */
     boolean deleteByName(String name);
+
+    User updateByName(User user);
 }

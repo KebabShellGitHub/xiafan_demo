@@ -60,7 +60,7 @@ public class JWTUtil {
      * @param token
      * @return
      */
-    public static String getUsername(String token){
+    public static String getUserName(String token){
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
 
         return claims.getSubject();

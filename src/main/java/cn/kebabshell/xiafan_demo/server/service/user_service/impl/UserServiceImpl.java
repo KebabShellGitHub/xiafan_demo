@@ -135,4 +135,14 @@ public class UserServiceImpl implements UserService {
 
         return true;
     }
+
+    @Override
+    public User updateByName(User user) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andNameEqualTo(user.getName());
+        userMapper.updateByExampleSelective(user, userExample);
+
+        return userMapper.selectByExample(userExample).get(0);
+    }
 }

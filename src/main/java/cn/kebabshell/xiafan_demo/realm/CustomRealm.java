@@ -62,7 +62,7 @@ public class CustomRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("授权");
         //获取安全数据(username)
-        String username = JWTUtil.getUsername(principalCollection.toString());
+        String username = JWTUtil.getUserName(principalCollection.toString());
         //根据username拿到user
         UserAuth userAuth = userService.findByNameForAuth(username);
         //拿到用户的角色/权限
@@ -97,7 +97,7 @@ public class CustomRealm extends AuthorizingRealm {
         //login传进的token
         String token = (String) authenticationToken.getCredentials();
         //解析拿到username，并查找用户且判断token的合法性
-        String username = JWTUtil.getUsername(token);
+        String username = JWTUtil.getUserName(token);
         User user = userService.findByName(username);
         if (user == null) {
             //如果用户不存在,抛异常

@@ -10,6 +10,8 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by KebabShell
  * on 2020/4/25 下午 02:38
@@ -105,6 +107,22 @@ public class UserController {
                 return new MyResult(ResultCode.SYS_ERROR);
         } else {
             return new MyResult(ResultCode.SYS_ERROR, "无效参数");
+        }
+    }
+    @RequiresRoles("general")
+    @PostMapping("/update")
+    public MyResult updateByName(User user, HttpServletRequest request){
+        String token = request.getHeader("Token");
+        String userName = JWTUtil.getUserName(token);
+        if (user.getName() == null){
+            return new MyResult(ResultCode.ERROR, "用户名不能为空");
+        }else if (!user.getName().equals(userName)){
+            return new MyResult(ResultCode.ERROR, "您无权更改其他用户的信息");
+        }else {
+            User updateUser = service.updateByName(user);
+            if (updateUser != null)
+                return new MyResult(ResultCode.SUCCESS.getCode(), "成功", updateUser);
+            return new MyResult(ResultCode.ERROR);
         }
     }
 }
