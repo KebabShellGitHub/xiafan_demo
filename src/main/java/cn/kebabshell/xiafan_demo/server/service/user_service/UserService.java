@@ -44,4 +44,10 @@ public interface UserService {
     boolean deleteByName(String name);
 
     User updateByName(User user);
+
+    /**
+     * 用户记录条数
+     * @return
+     */
+    int getUserCount();
 }

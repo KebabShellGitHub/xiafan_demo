@@ -19,6 +19,8 @@ public class User {
 
     private Date updateTime;
 
+    private Boolean effective;
+
     public Long getId() {
         return id;
     }
@@ -81,5 +83,13 @@ public class User {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Boolean getEffective() {
+        return effective;
+    }
+
+    public void setEffective(Boolean effective) {
+        this.effective = effective;
     }
 }

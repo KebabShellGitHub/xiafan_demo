@@ -15,6 +15,8 @@ public class VideoComment {
 
     private Date createTime;
 
+    private Boolean effective;
+
     public Long getId() {
         return id;
     }
@@ -61,5 +63,13 @@ public class VideoComment {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Boolean getEffective() {
+        return effective;
+    }
+
+    public void setEffective(Boolean effective) {
+        this.effective = effective;
     }
 }

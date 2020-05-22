@@ -1,6 +1,7 @@
 package cn.kebabshell.xiafan_demo.handler;
 
 import cn.kebabshell.xiafan_demo.handler.exception.MyTokenExpiredException;
+import cn.kebabshell.xiafan_demo.handler.exception.MyUserEffectiveException;
 import cn.kebabshell.xiafan_demo.handler.result.MyResult;
 import cn.kebabshell.xiafan_demo.handler.result.ResultCode;
 import org.apache.shiro.authz.AuthorizationException;
@@ -30,5 +31,10 @@ public class MyExceptionHandler {
     @ResponseBody
     public MyResult noToken(HttpServletRequest request, HttpServletResponse response, MyTokenExpiredException e){
         return new MyResult(ResultCode.TOKEN_EXPIRED, e.getMessage());
+    }
+    @ExceptionHandler(value = MyUserEffectiveException.class)
+    @ResponseBody
+    public MyResult noToken(HttpServletRequest request, HttpServletResponse response, MyUserEffectiveException e){
+        return new MyResult(ResultCode.ILLEGAL_USER, e.getMessage());
     }
 }

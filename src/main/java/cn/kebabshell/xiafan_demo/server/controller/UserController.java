@@ -1,6 +1,7 @@
 package cn.kebabshell.xiafan_demo.server.controller;
 
 import cn.kebabshell.xiafan_demo.common.pojo.User;
+import cn.kebabshell.xiafan_demo.handler.exception.MyUserEffectiveException;
 import cn.kebabshell.xiafan_demo.handler.result.MyResult;
 import cn.kebabshell.xiafan_demo.handler.result.ResultCode;
 import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Created by KebabShell
  * on 2020/4/25 下午 02:38
- * <p>
  * 用户控制器
  */
 @RestController
@@ -36,6 +36,8 @@ public class UserController {
         if (userGot == null) {
             //如果用户不存在
             return new MyResult(ResultCode.NO_USER);
+        } else if (!userGot.getEffective()){
+            throw new MyUserEffectiveException("此账号已被封禁，请联系管理员");
         } else if (!user.getPassword().equals(userGot.getPassword())) {
             //如果密码错误
             return new MyResult(ResultCode.PWD_ERROR);
@@ -124,5 +126,9 @@ public class UserController {
                 return new MyResult(ResultCode.SUCCESS.getCode(), "成功", updateUser);
             return new MyResult(ResultCode.ERROR);
         }
+    }
+    @GetMapping("/count")
+    public MyResult getUserCount(){
+        return new MyResult(ResultCode.SUCCESS, service.getUserCount());
     }
 }

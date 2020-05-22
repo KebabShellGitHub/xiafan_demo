@@ -165,6 +165,66 @@ public class VideoExample {
             return (Criteria) this;
         }
 
+        public Criteria andUserIdIsNull() {
+            addCriterion("user_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdIsNotNull() {
+            addCriterion("user_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdEqualTo(Long value) {
+            addCriterion("user_id =", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdNotEqualTo(Long value) {
+            addCriterion("user_id <>", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdGreaterThan(Long value) {
+            addCriterion("user_id >", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("user_id >=", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdLessThan(Long value) {
+            addCriterion("user_id <", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdLessThanOrEqualTo(Long value) {
+            addCriterion("user_id <=", value, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdIn(List<Long> values) {
+            addCriterion("user_id in", values, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdNotIn(List<Long> values) {
+            addCriterion("user_id not in", values, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdBetween(Long value1, Long value2) {
+            addCriterion("user_id between", value1, value2, "userId");
+            return (Criteria) this;
+        }
+
+        public Criteria andUserIdNotBetween(Long value1, Long value2) {
+            addCriterion("user_id not between", value1, value2, "userId");
+            return (Criteria) this;
+        }
+
         public Criteria andNameIsNull() {
             addCriterion("name is null");
             return (Criteria) this;
@@ -562,6 +622,66 @@ public class VideoExample {
 
         public Criteria andUpdateTimeNotBetween(Date value1, Date value2) {
             addCriterion("update_time not between", value1, value2, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveIsNull() {
+            addCriterion("effective is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveIsNotNull() {
+            addCriterion("effective is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveEqualTo(Boolean value) {
+            addCriterion("effective =", value, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveNotEqualTo(Boolean value) {
+            addCriterion("effective <>", value, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveGreaterThan(Boolean value) {
+            addCriterion("effective >", value, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveGreaterThanOrEqualTo(Boolean value) {
+            addCriterion("effective >=", value, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveLessThan(Boolean value) {
+            addCriterion("effective <", value, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveLessThanOrEqualTo(Boolean value) {
+            addCriterion("effective <=", value, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveIn(List<Boolean> values) {
+            addCriterion("effective in", values, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveNotIn(List<Boolean> values) {
+            addCriterion("effective not in", values, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveBetween(Boolean value1, Boolean value2) {
+            addCriterion("effective between", value1, value2, "effective");
+            return (Criteria) this;
+        }
+
+        public Criteria andEffectiveNotBetween(Boolean value1, Boolean value2) {
+            addCriterion("effective not between", value1, value2, "effective");
             return (Criteria) this;
         }
     }

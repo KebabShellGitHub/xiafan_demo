@@ -5,6 +5,8 @@ import java.util.Date;
 public class Video {
     private Long id;
 
+    private Long userId;
+
     private String name;
 
     private String preview;
@@ -17,12 +19,22 @@ public class Video {
 
     private Date updateTime;
 
+    private Boolean effective;
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -71,5 +83,13 @@ public class Video {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Boolean getEffective() {
+        return effective;
+    }
+
+    public void setEffective(Boolean effective) {
+        this.effective = effective;
     }
 }

@@ -8,6 +8,7 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="is_top" jdbcType="BIT" property="isTop" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="effective" jdbcType="BIT" property="effective" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, content, video_id, user_id, is_top, create_time
+    id, content, video_id, user_id, is_top, create_time, effective
   </sql>
   <select id="selectByExample" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoCommentExample" resultMap="BaseResultMap">
     select
@@ -105,9 +106,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into video_comment (content, video_id, user_id, 
-      is_top, create_time)
+      is_top, create_time, effective
+      )
     values (#{content,jdbcType=VARCHAR}, #{videoId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{isTop,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP})
+      #{isTop,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{effective,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="cn.kebabshell.xiafan_demo.common.pojo.VideoComment">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -130,6 +133,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="effective != null">
+        effective,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="content != null">
@@ -146,6 +152,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="effective != null">
+        #{effective,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -176,6 +185,9 @@
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="record.effective != null">
+        effective = #{record.effective,jdbcType=BIT},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -188,7 +200,8 @@
       video_id = #{record.videoId,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=BIGINT},
       is_top = #{record.isTop,jdbcType=BIT},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      effective = #{record.effective,jdbcType=BIT}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -211,6 +224,9 @@
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="effective != null">
+        effective = #{effective,jdbcType=BIT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -220,7 +236,8 @@
       video_id = #{videoId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=BIGINT},
       is_top = #{isTop,jdbcType=BIT},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      effective = #{effective,jdbcType=BIT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

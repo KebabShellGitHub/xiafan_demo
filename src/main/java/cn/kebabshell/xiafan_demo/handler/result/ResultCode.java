@@ -12,6 +12,8 @@ public enum ResultCode {
     PWD_ERROR(20004, "密码错误"),
     SYS_ERROR(20006, "系统错误"),
     ERROR(20007, "错误"),
+    ILLEGAL_USER(20008, "用户已被封禁"),
+    NO_PIC(20009, "图片不存在"),
     NO_USER(20001, "用户不存在");
 
     // 结果状态码

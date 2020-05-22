@@ -5,6 +5,7 @@ import cn.kebabshell.xiafan_demo.common.pojo.Authority;
 import cn.kebabshell.xiafan_demo.common.pojo.User;
 import cn.kebabshell.xiafan_demo.handler.exception.MyNoUserException;
 import cn.kebabshell.xiafan_demo.handler.exception.MyTokenExpiredException;
+import cn.kebabshell.xiafan_demo.handler.exception.MyUserEffectiveException;
 import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
 import cn.kebabshell.xiafan_demo.utils.JWTToken;
 import cn.kebabshell.xiafan_demo.utils.JWTUtil;

@@ -4,7 +4,6 @@ import cn.kebabshell.xiafan_demo.common.custom.UserAuth;
 import cn.kebabshell.xiafan_demo.common.custom.RoleAuth;
 import cn.kebabshell.xiafan_demo.common.mapper.*;
 import cn.kebabshell.xiafan_demo.common.pojo.*;
-import cn.kebabshell.xiafan_demo.handler.exception.MyNoUserException;
 import cn.kebabshell.xiafan_demo.handler.exception.MyRegisterException;
 import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,5 +143,10 @@ public class UserServiceImpl implements UserService {
         userMapper.updateByExampleSelective(user, userExample);
 
         return userMapper.selectByExample(userExample).get(0);
+    }
+
+    @Override
+    public int getUserCount() {
+        return userMapper.selectByExample(new UserExample()).size();
     }
 }
