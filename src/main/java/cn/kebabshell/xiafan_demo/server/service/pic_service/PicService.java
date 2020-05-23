@@ -3,6 +3,7 @@ package cn.kebabshell.xiafan_demo.server.service.pic_service;
 import cn.kebabshell.xiafan_demo.common.dto.PicBriefDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicCommentDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicInfoDTO;
+import cn.kebabshell.xiafan_demo.common.pojo.Pic;
 import cn.kebabshell.xiafan_demo.common.pojo.PicHits;
 
 import java.util.List;
@@ -12,6 +13,27 @@ import java.util.List;
  * on 2020/5/22 下午 04:05
  */
 public interface PicService {
+    /**
+     *
+     * @param picInfoDTO
+     * @return
+     */
+    PicInfoDTO addPic(PicInfoDTO picInfoDTO);
+
+    /**
+     *
+     * @param picId
+     * @return
+     */
+    boolean deletePic(Long userId, Long picId);
+
+    /**
+     *
+     * @param picInfoDTO
+     * @return
+     */
+    PicInfoDTO updatePic(Long userId, PicInfoDTO picInfoDTO);
+
     /**
      * 拿到图片详情信息，包括失效资源，需要管理员权限
      * @param userId

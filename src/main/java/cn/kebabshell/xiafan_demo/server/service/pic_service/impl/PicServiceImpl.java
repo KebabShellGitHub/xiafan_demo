@@ -5,10 +5,13 @@ import cn.kebabshell.xiafan_demo.common.dto.PicCommentDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicInfoDTO;
 import cn.kebabshell.xiafan_demo.common.mapper.*;
 import cn.kebabshell.xiafan_demo.common.pojo.*;
+import cn.kebabshell.xiafan_demo.handler.exception.MyAuthException;
 import cn.kebabshell.xiafan_demo.server.service.pic_service.PicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,6 +37,92 @@ public class PicServiceImpl implements PicService {
     private PicHitsMapper picHitsMapper;
     @Autowired
     private PicCommentMapper picCommentMapper;
+
+    @Override
+    @Transactional
+    public PicInfoDTO addPic(PicInfoDTO picInfoDTO) {
+        Pic pic = picInfoDTO.getPic();
+        pic.setCreateTime(new Date());
+        picMapper.insertSelective(pic);
+        PicSort picSort = new PicSort();
+        picSort.setCreateTime(pic.getCreateTime());
+        picSort.setPicId(pic.getId());
+        picSort.setSortId(picInfoDTO.getSortId());
+        picSortMapper.insertSelective(picSort);
+
+        picInfoDTO.setPic(pic);
+        return picInfoDTO;
+    }
+
+    @Override
+    @Transactional
+    public boolean deletePic(Long userId, Long picId) {
+        //判断这个图片是不是这个用户的
+        Long realUserId = picMapper.selectByPrimaryKey(picId).getUserId();
+        if (!userId.equals(realUserId)) {
+            throw new MyAuthException("无权限");
+        }
+        //删除点击记录
+        PicHitsExample picHitsExample = new PicHitsExample();
+        PicHitsExample.Criteria hitCriteria = picHitsExample.createCriteria();
+        hitCriteria.andPicIdEqualTo(picId);
+        picHitsMapper.deleteByExample(picHitsExample);
+        //删除点赞记录
+        PicLikeExample picLikeExample = new PicLikeExample();
+        PicLikeExample.Criteria likeCriteria = picLikeExample.createCriteria();
+        likeCriteria.andPicIdEqualTo(picId);
+        picLikeMapper.deleteByExample(picLikeExample);
+        //删除分类记录
+        PicSortExample picSortExample = new PicSortExample();
+        PicSortExample.Criteria sortCriteria = picSortExample.createCriteria();
+        sortCriteria.andPicIdEqualTo(picId);
+        picSortMapper.deleteByExample(picSortExample);
+        //删除评论记录
+        PicCommentExample picCommentExample = new PicCommentExample();
+        PicCommentExample.Criteria commentCriteria = picCommentExample.createCriteria();
+        commentCriteria.andPicIdEqualTo(picId);
+        picCommentMapper.deleteByExample(picCommentExample);
+        //删除图片
+        picMapper.deleteByPrimaryKey(picId);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public PicInfoDTO updatePic(Long userId, PicInfoDTO picInfoDTO) {
+        Long picId = picInfoDTO.getPic().getId();
+        //判断这个图片是不是这个用户的
+        Long realUserId = picMapper.selectByPrimaryKey(picId).getUserId();
+        if (!userId.equals(realUserId)) {
+            throw new MyAuthException("无权限");
+        }
+        //分类
+        Long newSortId = picInfoDTO.getSortId();
+        if (newSortId != null){
+            PicSortExample picSortExample = new PicSortExample();
+            PicSortExample.Criteria sortCriteria = picSortExample.createCriteria();
+            sortCriteria.andPicIdEqualTo(picId);
+            PicSort realPicSort = picSortMapper.selectByExample(picSortExample).get(0);
+            //如果数据库的分类信息和新分类信息不一样
+            if (!realPicSort.getSortId().equals(newSortId)) {
+                //更新分类信息
+                PicSort newPicSort = new PicSort();
+                newPicSort.setSortId(newSortId);
+                newPicSort.setId(realPicSort.getId());
+                picSortMapper.updateByPrimaryKeySelective(newPicSort);
+
+                //填充新分类信息
+                String sortName = sortMapper.selectByPrimaryKey(newSortId).getName();
+                picInfoDTO.setSortName(sortName);
+            }
+        }
+        //图片
+        picMapper.updateByPrimaryKeySelective(picInfoDTO.getPic());
+        //填充新图片信息
+        picInfoDTO.setPic(picMapper.selectByPrimaryKey(picId));
+
+        return picInfoDTO;
+    }
 
     @Override
     public PicInfoDTO getPicInfoByRoot(Long userId, Long picId) {

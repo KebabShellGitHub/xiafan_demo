@@ -1,14 +1,17 @@
 package cn.kebabshell.xiafan_demo.server.controller;
 
 import cn.kebabshell.xiafan_demo.common.dto.PicInfoDTO;
+import cn.kebabshell.xiafan_demo.common.pojo.User;
 import cn.kebabshell.xiafan_demo.handler.result.MyResult;
 import cn.kebabshell.xiafan_demo.handler.result.ResultCode;
 import cn.kebabshell.xiafan_demo.server.service.pic_service.PicService;
+import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
+import cn.kebabshell.xiafan_demo.utils.JWTUtil;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by KebabShell
@@ -19,6 +22,46 @@ import org.springframework.web.bind.annotation.RestController;
 public class PicController {
     @Autowired
     private PicService service;
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/add")
+    public MyResult addPic(@RequestBody PicInfoDTO picInfoDTO){
+        return new MyResult(ResultCode.SUCCESS, service.addPic(picInfoDTO));
+    }
+    @RequiresRoles("general")
+    @GetMapping("/del")
+    public MyResult delPic(HttpServletRequest request, Long picId){
+        String token = request.getHeader("Token");
+        if (token == null){
+            return new MyResult(ResultCode.NO_LOGIN, "请重新登录");
+        }
+        String userName = JWTUtil.getUserName(token);
+        User user = userService.findByName(userName);
+        if (user == null){
+            return new MyResult(ResultCode.NO_USER);
+        }else if (!user.getEffective()){
+            return new MyResult(ResultCode.ILLEGAL_USER);
+        }
+        return service.deletePic(user.getId(), picId) ?
+                new MyResult(ResultCode.SUCCESS) : new MyResult(ResultCode.ERROR);
+    }
+    @RequiresRoles("general")
+    @PostMapping("/update")
+    public MyResult updatePic(HttpServletRequest request, @RequestBody PicInfoDTO picInfoDTO){
+        String token = request.getHeader("Token");
+        if (token == null){
+            return new MyResult(ResultCode.NO_LOGIN, "请重新登录");
+        }
+        String userName = JWTUtil.getUserName(token);
+        User user = userService.findByName(userName);
+        if (user == null){
+            return new MyResult(ResultCode.NO_USER);
+        }else if (!user.getEffective()){
+            return new MyResult(ResultCode.ILLEGAL_USER);
+        }
+        return new MyResult(ResultCode.SUCCESS, service.updatePic(user.getId(), picInfoDTO));
+    }
 
     @RequiresRoles("root")
     @GetMapping("/info/root")

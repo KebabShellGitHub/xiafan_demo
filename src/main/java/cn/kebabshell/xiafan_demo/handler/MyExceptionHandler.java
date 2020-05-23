@@ -1,5 +1,6 @@
 package cn.kebabshell.xiafan_demo.handler;
 
+import cn.kebabshell.xiafan_demo.handler.exception.MyAuthException;
 import cn.kebabshell.xiafan_demo.handler.exception.MyTokenExpiredException;
 import cn.kebabshell.xiafan_demo.handler.exception.MyUserEffectiveException;
 import cn.kebabshell.xiafan_demo.handler.result.MyResult;
@@ -34,7 +35,21 @@ public class MyExceptionHandler {
     }
     @ExceptionHandler(value = MyUserEffectiveException.class)
     @ResponseBody
-    public MyResult noToken(HttpServletRequest request, HttpServletResponse response, MyUserEffectiveException e){
+    public MyResult illegalUser(HttpServletRequest request, HttpServletResponse response, MyUserEffectiveException e){
         return new MyResult(ResultCode.ILLEGAL_USER, e.getMessage());
+    }
+    @ExceptionHandler(value = MyAuthException.class)
+    @ResponseBody
+    public MyResult noAuth(HttpServletRequest request, HttpServletResponse response, MyAuthException e){
+        return new MyResult(ResultCode.NO_AUTHORITY, e.getMessage());
+    }
+
+
+
+
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    public MyResult common(HttpServletRequest request, HttpServletResponse response, Exception e){
+        return new MyResult(ResultCode.ERROR);
     }
 }
