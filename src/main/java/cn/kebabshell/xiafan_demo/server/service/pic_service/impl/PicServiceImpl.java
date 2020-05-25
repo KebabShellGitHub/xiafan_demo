@@ -37,6 +37,13 @@ public class PicServiceImpl implements PicService {
     private PicHitsMapper picHitsMapper;
     @Autowired
     private PicCommentMapper picCommentMapper;
+    @Autowired
+    private PicCommentLikeMapper picCommentLikeMapper;
+
+    @Override
+    public Pic getPic(Long picId) {
+        return picMapper.selectByPrimaryKey(picId);
+    }
 
     @Override
     @Transactional
@@ -134,7 +141,9 @@ public class PicServiceImpl implements PicService {
         }
 
         //发布人用户名
-        String userName = userMapper.selectByPrimaryKey(pic.getUserId()).getName();
+        User user = userMapper.selectByPrimaryKey(pic.getUserId());
+        String userName = user.getName();
+        String avatarPath = user.getAvatar();
         //拿到分类id
         PicSortExample picSortExample = new PicSortExample();
         PicSortExample.Criteria criteria = picSortExample.createCriteria();
@@ -149,7 +158,7 @@ public class PicServiceImpl implements PicService {
         long likeCount = picLikeMapper.countByExample(picLikeExample);
         //我是否有关注ta
         boolean isFollow = false;
-        if (userId != null) {
+        if (userId != null && userId != 0) {
             UserFollowExample userFollowExample = new UserFollowExample();
             UserFollowExample.Criteria criteria2 = userFollowExample.createCriteria();
             criteria2.andUserIdEqualTo(userId)
@@ -168,7 +177,10 @@ public class PicServiceImpl implements PicService {
         PicCommentExample.Criteria criteria4 = picCommentExample.createCriteria();
         criteria4.andPicIdEqualTo(picId);
         long commentCount = picCommentMapper.countByExample(picCommentExample);
-        return new PicInfoDTO(pic, userName, sortId, sortName, likeCount, isFollow, hitCount, commentCount);
+        return new PicInfoDTO(pic, userName,
+                sortId, sortName, likeCount,
+                isFollow, hitCount, commentCount,
+                avatarPath);
     }
 
     @Override
@@ -201,12 +213,15 @@ public class PicServiceImpl implements PicService {
         return picBriefDTOS;
     }
 
+
     @Override
     public List<PicBriefDTO> getPicBriefLimit(Long userId, int pageNum, int pageCount) {
         PicExample picExample = new PicExample();
         //设置分页
-        picExample.setStart(pageNum - 1);
-        picExample.setCount(pageCount);
+        if (pageCount != 0){
+            picExample.setStart(pageNum - 1);
+            picExample.setCount(pageCount);
+        }
         PicExample.Criteria picExampleCriteria = picExample.createCriteria();
         //合法
         picExampleCriteria.andEffectiveEqualTo(true);
@@ -226,22 +241,122 @@ public class PicServiceImpl implements PicService {
     }
 
     @Override
-    public List<PicCommentDTO> getPicCommentLimit(int pageNum, int pageCount) {
-        return null;
+    public List<PicCommentDTO> getPicCommentLimit(Long picId, int pageNum, int pageCount) {
+        List<PicCommentDTO> picCommentLimitByRoot = getPicCommentLimitByRoot(picId, pageNum, pageCount);
+        for (PicCommentDTO picCommentDTO : picCommentLimitByRoot) {
+            //合法
+            if (!picCommentDTO.getPicComment().getEffective()){
+                picCommentLimitByRoot.remove(picCommentDTO);
+            }
+        }
+        return picCommentLimitByRoot;
     }
 
     @Override
-    public List<PicCommentDTO> getPicCommentLimitByRoot(int pageNum, int pageCount) {
-        return null;
+    public List<PicCommentDTO> getPicCommentLimitByRoot(Long picId, int pageNum, int pageCount) {
+        PicCommentExample picCommentExample = new PicCommentExample();
+        //分页
+        picCommentExample.setStart(pageNum - 1);
+        picCommentExample.setCount(pageCount);
+
+        PicCommentExample.Criteria criteria = picCommentExample.createCriteria();
+        criteria.andPicIdEqualTo(picId);
+        List<PicComment> picComments = picCommentMapper.selectByExample(picCommentExample);
+
+        List<PicCommentDTO> picCommentDTOS = new LinkedList<>();
+        for (PicComment picComment : picComments) {
+
+            PicCommentLikeExample picCommentLikeExample = new PicCommentLikeExample();
+            PicCommentLikeExample.Criteria criteria1 = picCommentLikeExample.createCriteria();
+            criteria1.andCommentIdEqualTo(picComment.getId());
+            long likeCount = picCommentLikeMapper.countByExample(picCommentLikeExample);
+            User user = userMapper.selectByPrimaryKey(picComment.getUserId());
+            //用户名
+            String userName = user.getName();
+            //头像
+            String avatarPath = user.getAvatar();
+            picCommentDTOS.add(new PicCommentDTO(picComment, likeCount, userName, avatarPath));
+        }
+        return picCommentDTOS;
     }
 
     @Override
-    public List<PicHits> getPicHits(int pageNum, int pageCount) {
-        return null;
+    public List<PicHits> getPicHitsByRoot(Long picId, int pageNum, int pageCount) {
+        PicHitsExample picHitsExample = new PicHitsExample();
+        //分页
+        picHitsExample.setStart(pageNum - 1);
+        picHitsExample.setCount(pageCount);
+
+        PicHitsExample.Criteria criteria = picHitsExample.createCriteria();
+        criteria.andPicIdEqualTo(picId);
+        return picHitsMapper.selectByExample(picHitsExample);
     }
 
     @Override
-    public List<PicHits> getPicHitsByRoot(int pageNum, int pageCount) {
-        return null;
+    public void addHit(PicHits picHits) {
+        picHitsMapper.insert(picHits);
+    }
+
+    @Override
+    public PicCommentDTO addPicComment(PicComment picComment) {
+        picCommentMapper.insertSelective(picComment);
+        User user = userMapper.selectByPrimaryKey(picComment.getUserId());
+        String userName = user.getName();
+        String avatarPath = user.getAvatar();
+        PicCommentDTO picCommentDTO = new PicCommentDTO();
+        picCommentDTO.setPicComment(picComment);
+        picCommentDTO.setAvatarPath(avatarPath);
+        picCommentDTO.setUserName(userName);
+
+        return picCommentDTO;
+    }
+
+    @Override
+    @Transactional
+    public boolean delPicComment(Long commentId) {
+        PicCommentLikeExample picCommentLikeExample = new PicCommentLikeExample();
+        PicCommentLikeExample.Criteria criteria = picCommentLikeExample.createCriteria();
+        criteria.andCommentIdEqualTo(commentId);
+        picCommentLikeMapper.deleteByExample(picCommentLikeExample);
+        picCommentMapper.deleteByPrimaryKey(commentId);
+        return true;
+    }
+
+    @Override
+    public List<PicBriefDTO> getPicInSort(Long userId, Long sortId, int pageNum, int pageCount) {
+        PicSortExample picSortExample = new PicSortExample();
+        //分页
+        picSortExample.setStart(pageNum - 1);
+        picSortExample.setCount(pageCount);
+        PicSortExample.Criteria criteria = picSortExample.createCriteria();
+        criteria.andSortIdEqualTo(sortId);
+        List<PicSort> picSorts = picSortMapper.selectByExample(picSortExample);
+
+        List<PicBriefDTO> picBriefDTOS = new LinkedList<>();
+        for (PicSort picSort : picSorts) {
+            Long picId = picSort.getPicId();
+            PicBriefDTO picBriefByPicId = getPicBriefByPicId(userId, picId);
+            picBriefDTOS.add(picBriefByPicId);
+        }
+        return picBriefDTOS;
+    }
+
+    private PicBriefDTO getPicBriefByPicId(Long userId, Long picId){
+        PicInfoDTO picInfo = getPicInfo(userId, picId);
+        Pic pic = picInfo.getPic();
+        return new PicBriefDTO(pic.getId(), pic.getUserId(),
+                picInfo.getUserName(), picInfo.isFollow(), pic.getName(),
+                pic.getPath(), picInfo.getHitCount(), picInfo.getSortId(),
+                picInfo.getSortName(), picInfo.getCommentCount(),
+                picInfo.getLikeCount());
+    }
+    @Override
+    public List<PicHits> getPicHits(Long picId, int pageNum, int pageCount) {
+        List<PicHits> picHitsByRoot = getPicHitsByRoot(picId, pageNum, pageCount);
+        //脱敏
+        for (PicHits picHits : picHitsByRoot) {
+            picHits.setIp("");
+        }
+        return picHitsByRoot;
     }
 }

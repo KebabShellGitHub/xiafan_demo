@@ -7,7 +7,7 @@
     <result column="pic_id" jdbcType="BIGINT" property="picId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="is_top" jdbcType="BIT" property="isTop" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" javaType="java.util.Date"/>
     <result column="effective" jdbcType="BIT" property="effective" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -83,6 +83,9 @@
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
+    </if>
+    <if test="start != null &amp;&amp; count != 0">
+      limit ${start},${count}
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

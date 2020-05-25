@@ -1,6 +1,7 @@
 package cn.kebabshell.xiafan_demo.filter;
 
 import cn.kebabshell.xiafan_demo.utils.JWTToken;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
@@ -36,7 +37,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                 return true;
             } catch (Exception e) {
                 //token 错误
-                responseError(response, e.getMessage());
+//                responseError(response, e.getMessage());
+                logger.warn("token error");
             }
         }
         //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
@@ -58,7 +60,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      * 执行登陆操作
      */
     @Override
-    protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
+    protected boolean executeLogin(ServletRequest request, ServletResponse response) throws AuthenticationException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getHeader("Token");
         JWTToken jwtToken = new JWTToken(token);
@@ -86,17 +88,14 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         return super.preHandle(request, response);
     }
 
-    /**
-     * 将非法请求跳转到 /unauthorized/**
-     */
     private void responseError(ServletResponse response, String message) {
-        try {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            //设置编码，否则中文字符在重定向时会变为空字符串
-            message = URLEncoder.encode(message, "UTF-8");
-            httpServletResponse.sendRedirect("/unauthorized/" + message);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+//        try {
+//            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+//            //设置编码，否则中文字符在重定向时会变为空字符串
+//            message = URLEncoder.encode(message, "UTF-8");
+//            httpServletResponse.sendRedirect("/error");
+//        } catch (IOException e) {
+//            logger.error(e.getMessage());
+//        }
     }
 }

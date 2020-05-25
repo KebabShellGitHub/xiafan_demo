@@ -85,7 +85,7 @@
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
-    <if test="start != null &amp;&amp; count != null">
+    <if test="start != null &amp;&amp; count != 0">
       limit ${start},${count}
     </if>
   </select>

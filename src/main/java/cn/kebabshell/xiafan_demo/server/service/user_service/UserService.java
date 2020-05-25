@@ -3,6 +3,8 @@ package cn.kebabshell.xiafan_demo.server.service.user_service;
 import cn.kebabshell.xiafan_demo.common.custom.UserAuth;
 import cn.kebabshell.xiafan_demo.common.pojo.User;
 
+import java.util.List;
+
 /**
  * Created by KebabShell
  * on 2020/4/25 下午 02:27
@@ -50,4 +52,34 @@ public interface UserService {
      * @return
      */
     int getUserCount();
+
+    /**
+     * 粉丝
+     * @param userId
+     * @return
+     */
+    List<User> getFollowMe(Long userId);
+
+    /**
+     * 我的关注
+     * @param userId
+     * @return
+     */
+    List<User> getMyFollow(Long userId);
+
+    /**
+     * 添加关注 userId 关注 followedUserId
+     * @param userId 关注人
+     * @param followedUserId 被关注人
+     * @return
+     */
+    boolean addFollow(Long userId, Long followedUserId);
+
+    /**
+     * 取消关注
+     * @param userId
+     * @param followedUserId
+     * @return
+     */
+    boolean delFollow(Long userId, Long followedUserId);
 }

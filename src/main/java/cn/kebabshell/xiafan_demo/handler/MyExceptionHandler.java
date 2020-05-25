@@ -5,6 +5,7 @@ import cn.kebabshell.xiafan_demo.handler.exception.MyTokenExpiredException;
 import cn.kebabshell.xiafan_demo.handler.exception.MyUserEffectiveException;
 import cn.kebabshell.xiafan_demo.handler.result.MyResult;
 import cn.kebabshell.xiafan_demo.handler.result.ResultCode;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,14 +24,14 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 public class MyExceptionHandler {
 
-    @ExceptionHandler(value = AuthorizationException.class)
-    @ResponseBody
-    public MyResult auth(HttpServletRequest request, HttpServletResponse response, AuthorizationException e){
-        return new MyResult(ResultCode.NO_AUTHORITY, "无权限");
-    }
     @ExceptionHandler(value = MyTokenExpiredException.class)
     @ResponseBody
     public MyResult noToken(HttpServletRequest request, HttpServletResponse response, MyTokenExpiredException e){
+        return new MyResult(ResultCode.TOKEN_EXPIRED, e.getMessage());
+    }
+    @ExceptionHandler(value = io.jsonwebtoken.ExpiredJwtException.class)
+    @ResponseBody
+    public MyResult noToken(HttpServletRequest request, HttpServletResponse response, io.jsonwebtoken.ExpiredJwtException e){
         return new MyResult(ResultCode.TOKEN_EXPIRED, e.getMessage());
     }
     @ExceptionHandler(value = MyUserEffectiveException.class)
@@ -41,7 +42,12 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = MyAuthException.class)
     @ResponseBody
     public MyResult noAuth(HttpServletRequest request, HttpServletResponse response, MyAuthException e){
-        return new MyResult(ResultCode.NO_AUTHORITY, e.getMessage());
+        return new MyResult(ResultCode.NO_AUTHORITY, "无权限");
+    }
+    @ExceptionHandler(value = AuthorizationException.class)
+    @ResponseBody
+    public MyResult auth(HttpServletRequest request, HttpServletResponse response, AuthorizationException e){
+        return new MyResult(ResultCode.NO_AUTHORITY, "无权限");
     }
 
 

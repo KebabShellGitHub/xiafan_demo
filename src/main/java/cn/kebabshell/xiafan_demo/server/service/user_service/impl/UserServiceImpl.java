@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -30,6 +31,8 @@ public class UserServiceImpl implements UserService {
     private RoleMapper roleMapper;
     @Autowired
     private AuthorityMapper authorityMapper;
+    @Autowired
+    private UserFollowMapper userFollowMapper;
 
     @Override
     public User findByName(String username) {
@@ -148,5 +151,52 @@ public class UserServiceImpl implements UserService {
     @Override
     public int getUserCount() {
         return userMapper.selectByExample(new UserExample()).size();
+    }
+
+    @Override
+    public List<User> getFollowMe(Long userId) {
+        UserFollowExample userFollowExample = new UserFollowExample();
+        UserFollowExample.Criteria criteria = userFollowExample.createCriteria();
+        criteria.andFollowedUserIdEqualTo(userId);
+        List<UserFollow> userFollows = userFollowMapper.selectByExample(userFollowExample);
+
+        List<User> fans = new LinkedList<>();
+        for (UserFollow userFollow : userFollows) {
+            fans.add(userMapper.selectByPrimaryKey(userFollow.getUserId()));
+        }
+        return fans;
+    }
+
+    @Override
+    public List<User> getMyFollow(Long userId) {
+        UserFollowExample userFollowExample = new UserFollowExample();
+        UserFollowExample.Criteria criteria = userFollowExample.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        List<UserFollow> userFollows = userFollowMapper.selectByExample(userFollowExample);
+
+        List<User> myFollow = new LinkedList<>();
+        for (UserFollow userFollow : userFollows) {
+            myFollow.add(userMapper.selectByPrimaryKey(userFollow.getFollowedUserId()));
+        }
+        return myFollow;
+    }
+
+    @Override
+    public boolean addFollow(Long userId, Long followedUserId) {
+        UserFollow userFollow = new UserFollow();
+        userFollow.setUserId(userId);
+        userFollow.setFollowedUserId(followedUserId);
+        userFollowMapper.insertSelective(userFollow);
+        return true;
+    }
+
+    @Override
+    public boolean delFollow(Long userId, Long followedUserId) {
+        UserFollowExample userFollowExample = new UserFollowExample();
+        UserFollowExample.Criteria criteria = userFollowExample.createCriteria();
+        criteria.andUserIdEqualTo(userId)
+                .andFollowedUserIdEqualTo(followedUserId);
+        userFollowMapper.deleteByExample(userFollowExample);
+        return true;
     }
 }

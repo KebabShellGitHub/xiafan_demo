@@ -17,5 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PicCommentDTO {
     private PicComment picComment;
-    private int likeCount;
+    private long likeCount;
+    private String userName;
+    private String avatarPath;
 }

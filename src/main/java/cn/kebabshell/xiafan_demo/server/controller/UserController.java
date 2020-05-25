@@ -131,4 +131,39 @@ public class UserController {
     public MyResult getUserCount(){
         return new MyResult(ResultCode.SUCCESS, service.getUserCount());
     }
+
+    @GetMapping("/fans")
+    public MyResult getFans(Long userId){
+        return new MyResult(ResultCode.SUCCESS, service.getFollowMe(userId));
+    }
+
+    @GetMapping("/follow")
+    public MyResult getFollow(Long userId){
+        return new MyResult(ResultCode.SUCCESS, service.getMyFollow(userId));
+    }
+
+    @GetMapping("/follow/add")
+    public MyResult addFollow(HttpServletRequest request, Long followedUserId){
+        String token = request.getHeader("Token");
+        if (token == null || token.isEmpty()){
+            return new MyResult(ResultCode.NO_LOGIN);
+        }
+        String userName = JWTUtil.getUserName(token);
+        User user = service.findByName(userName);
+        Long userId = user.getId();
+        service.addFollow(userId, followedUserId);
+        return new MyResult(ResultCode.SUCCESS);
+    }
+    @GetMapping("/follow/del")
+    public MyResult deleteFollow(HttpServletRequest request, Long followedUserId){
+        String token = request.getHeader("Token");
+        if (token == null || token.isEmpty()){
+            return new MyResult(ResultCode.NO_LOGIN);
+        }
+        String userName = JWTUtil.getUserName(token);
+        User user = service.findByName(userName);
+        Long userId = user.getId();
+        service.delFollow(userId, followedUserId);
+        return new MyResult(ResultCode.SUCCESS);
+    }
 }
