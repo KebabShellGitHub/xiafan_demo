@@ -1,7 +1,10 @@
 package cn.kebabshell.xiafan_demo.server.service.sys_service;
 
 
+import cn.kebabshell.xiafan_demo.common.custom.RoleAuth;
 import cn.kebabshell.xiafan_demo.common.dto.PicBriefDTO;
+import cn.kebabshell.xiafan_demo.common.pojo.LogOperation;
+import cn.kebabshell.xiafan_demo.common.pojo.Role;
 import cn.kebabshell.xiafan_demo.common.pojo.Sort;
 
 import java.util.List;
@@ -41,9 +44,19 @@ public interface SysService {
 
     /**
      * 查找所有分类
-     * @param sortId
      * @return
      */
-    List<Sort> getAllSort(Long sortId);
+    List<Sort> getAllSort();
+
+    List<RoleAuth> getAllRoleInfo();
+
+//    Role addRole(Role role);
+
+    Role updateRole(Role role);
+
+    List<LogOperation> getAllOperation(int pageNum, int pageCount);
+
+
+
 
 }

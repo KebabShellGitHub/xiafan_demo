@@ -1,5 +1,6 @@
 package cn.kebabshell.xiafan_demo.server.service.pic_service;
 
+import cn.kebabshell.xiafan_demo.common.dto.PicAddDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicBriefDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicCommentDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicInfoDTO;
@@ -19,10 +20,10 @@ public interface PicService {
     Pic getPic(Long picId);
 
     /**
-     * @param picInfoDTO
+     * @param picAddDTO
      * @return
      */
-    PicInfoDTO addPic(PicInfoDTO picInfoDTO);
+    PicAddDTO addPic(PicAddDTO picAddDTO);
 
     /**
      * @param picId
@@ -53,6 +54,26 @@ public interface PicService {
      * @return
      */
     PicInfoDTO getPicInfo(Long userId, Long picId);
+
+
+    /**
+     * 根据用户(作者)id查找他的所有图片(需要root)
+     * @param authorId 作者id
+     * @param userId 请求的用户(用于看粉丝关系)
+     * @param pageNum
+     * @param pageCount
+     * @return
+     */
+    List<PicBriefDTO> getPicBriefLimitByAuthorUserIdByRoot(Long authorId, Long userId, int pageNum, int pageCount);
+    /**
+     * 根据用户(作者)id查找他的所有图片(排除非法)
+     * @param authorId 作者id
+     * @param userId 请求的用户(用于看粉丝关系)
+     * @param pageNum
+     * @param pageCount
+     * @return
+     */
+    List<PicBriefDTO> getPicBriefLimitByAuthorUserId(Long authorId, Long userId, int pageNum, int pageCount);
 
     /**
      * 拿到所有图片简介，包括失效资源，需要管理员权限
@@ -131,7 +152,6 @@ public interface PicService {
 
     /**
      * 删除评论
-     *
      * @param commentId
      * @return
      */
@@ -146,4 +166,17 @@ public interface PicService {
      */
     List<PicBriefDTO> getPicInSort(Long userId, Long sortId, int pageNum, int pageCount);
 
+    /**
+     * 点赞
+     * @param picLike
+     * @return
+     */
+    boolean addLike(PicLike picLike);
+
+    /**
+     * 取消点赞
+     * @param picLike
+     * @return
+     */
+    boolean delLike(PicLike picLike);
 }

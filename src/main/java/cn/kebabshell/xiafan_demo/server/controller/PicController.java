@@ -1,17 +1,21 @@
 package cn.kebabshell.xiafan_demo.server.controller;
 
+import cn.kebabshell.xiafan_demo.common.dto.PicAddDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicInfoDTO;
 import cn.kebabshell.xiafan_demo.common.pojo.PicComment;
 import cn.kebabshell.xiafan_demo.common.pojo.PicHits;
+import cn.kebabshell.xiafan_demo.common.pojo.PicLike;
 import cn.kebabshell.xiafan_demo.common.pojo.User;
 import cn.kebabshell.xiafan_demo.handler.result.MyResult;
 import cn.kebabshell.xiafan_demo.handler.result.ResultCode;
 import cn.kebabshell.xiafan_demo.server.service.pic_service.PicService;
 import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
+import cn.kebabshell.xiafan_demo.utils.FileSave;
 import cn.kebabshell.xiafan_demo.utils.JWTUtil;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -27,12 +31,14 @@ public class PicController {
     private PicService service;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private FileSave fileSave;
 
     @PostMapping("/add")
-    public MyResult addPic(@RequestBody PicInfoDTO picInfoDTO) {
-
-        return new MyResult(ResultCode.SUCCESS, service.addPic(picInfoDTO));
+    public MyResult addPic(PicAddDTO picAddDTO, MultipartFile file) {
+        String path = fileSave.save(file);
+        picAddDTO.setPath(path);
+        return new MyResult(ResultCode.SUCCESS, service.addPic(picAddDTO));
     }
 
     @RequiresRoles("general")
@@ -91,6 +97,8 @@ public class PicController {
             String ip = request.getRemoteAddr();
             PicHits picHits = new PicHits();
             picHits.setIp(ip);
+            picHits.setPicId(picId);
+            picHits.setCreateTime(new Date());
             //picHits.setLocation("");
             service.addHit(picHits);
 
@@ -109,6 +117,11 @@ public class PicController {
     @GetMapping("/list")
     public MyResult getPicBriefLimit(Long userId, int pageNum, int pageCount) {
         return new MyResult(ResultCode.SUCCESS, service.getPicBriefLimit(userId, pageNum, pageCount));
+    }
+
+    @GetMapping("/list/sb")
+    public MyResult getPicBriefLimitByAuthorUserId(Long authorId, Long userId, int pageNum, int pageCount) {
+        return new MyResult(ResultCode.SUCCESS, service.getPicBriefLimitByAuthorUserId(authorId, userId, pageNum, pageCount));
     }
 
     @GetMapping("/comment")
@@ -185,5 +198,24 @@ public class PicController {
             userId = userService.findByName(userName).getId();
         }
         return new MyResult(ResultCode.SUCCESS, service.getPicInSort(userId, sortId, pageNum, pageCount));
+    }
+
+    @PostMapping("/like")
+    public MyResult addLike(@RequestBody PicLike picLike){
+        boolean b = service.addLike(picLike);
+        if (b){
+            return new MyResult(ResultCode.SUCCESS);
+        }else {
+            return new MyResult(ResultCode.ERROR);
+        }
+    }
+    @PostMapping("/dislike")
+    public MyResult disLike(@RequestBody PicLike picLike){
+        boolean b = service.delLike(picLike);
+        if (b){
+            return new MyResult(ResultCode.SUCCESS);
+        }else {
+            return new MyResult(ResultCode.ERROR);
+        }
     }
 }

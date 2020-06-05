@@ -27,27 +27,27 @@ public class MyExceptionHandler {
     @ExceptionHandler(value = MyTokenExpiredException.class)
     @ResponseBody
     public MyResult noToken(HttpServletRequest request, HttpServletResponse response, MyTokenExpiredException e){
-        return new MyResult(ResultCode.TOKEN_EXPIRED, e.getMessage());
+        return new MyResult(ResultCode.TOKEN_EXPIRED);
     }
     @ExceptionHandler(value = io.jsonwebtoken.ExpiredJwtException.class)
     @ResponseBody
-    public MyResult noToken(HttpServletRequest request, HttpServletResponse response, io.jsonwebtoken.ExpiredJwtException e){
-        return new MyResult(ResultCode.TOKEN_EXPIRED, e.getMessage());
+    public MyResult noToken1(HttpServletRequest request, HttpServletResponse response, io.jsonwebtoken.ExpiredJwtException e){
+        return new MyResult(ResultCode.TOKEN_EXPIRED);
     }
     @ExceptionHandler(value = MyUserEffectiveException.class)
     @ResponseBody
     public MyResult illegalUser(HttpServletRequest request, HttpServletResponse response, MyUserEffectiveException e){
-        return new MyResult(ResultCode.ILLEGAL_USER, e.getMessage());
+        return new MyResult(ResultCode.ILLEGAL_USER);
     }
     @ExceptionHandler(value = MyAuthException.class)
     @ResponseBody
     public MyResult noAuth(HttpServletRequest request, HttpServletResponse response, MyAuthException e){
-        return new MyResult(ResultCode.NO_AUTHORITY, "无权限");
+        return new MyResult(ResultCode.NO_AUTHORITY);
     }
     @ExceptionHandler(value = AuthorizationException.class)
     @ResponseBody
     public MyResult auth(HttpServletRequest request, HttpServletResponse response, AuthorizationException e){
-        return new MyResult(ResultCode.NO_AUTHORITY, "无权限");
+        return new MyResult(ResultCode.NO_AUTHORITY);
     }
 
 

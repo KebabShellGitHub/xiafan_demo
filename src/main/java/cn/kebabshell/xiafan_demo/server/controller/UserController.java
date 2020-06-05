@@ -1,15 +1,18 @@
 package cn.kebabshell.xiafan_demo.server.controller;
 
+import cn.kebabshell.xiafan_demo.common.dto.UserDetailDTO;
 import cn.kebabshell.xiafan_demo.common.pojo.User;
 import cn.kebabshell.xiafan_demo.handler.exception.MyUserEffectiveException;
 import cn.kebabshell.xiafan_demo.handler.result.MyResult;
 import cn.kebabshell.xiafan_demo.handler.result.ResultCode;
 import cn.kebabshell.xiafan_demo.server.service.user_service.UserService;
+import cn.kebabshell.xiafan_demo.utils.FileSave;
 import cn.kebabshell.xiafan_demo.utils.JWTUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +26,20 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
     @Autowired
     private UserService service;
+    @Autowired
+    private FileSave fileSave;
+
+    @GetMapping("/get")
+    public MyResult getUserDetail(HttpServletRequest request, Long userId, String userName){
+
+        String token = request.getHeader("Token");
+        String name = JWTUtil.getUserName(token);
+        if (!userName.equals(name)){
+            return new MyResult(ResultCode.NO_AUTHORITY);
+        }
+        UserDetailDTO dto = service.getUserByIdOrName(userId, userName);
+        return new MyResult(ResultCode.SUCCESS, dto);
+    }
 
     /**
      * 登录
@@ -31,7 +48,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public MyResult login(User user) {
+    public MyResult login(@RequestBody User user) {
         User userGot = service.findByName(user.getName());
         if (userGot == null) {
             //如果用户不存在
@@ -68,7 +85,9 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    public MyResult register(User user) {
+    public MyResult register(User user, MultipartFile avatar) {
+        String avatarPath = fileSave.save(avatar);
+        user.setAvatar(avatarPath);
         //数据校验交给前端
         User newUser = service.register(user);
         return new MyResult(ResultCode.SUCCESS.getCode(), "注册成功", newUser);

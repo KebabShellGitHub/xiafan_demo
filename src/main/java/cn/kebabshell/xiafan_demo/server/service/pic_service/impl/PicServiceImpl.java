@@ -1,5 +1,6 @@
 package cn.kebabshell.xiafan_demo.server.service.pic_service.impl;
 
+import cn.kebabshell.xiafan_demo.common.dto.PicAddDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicBriefDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicCommentDTO;
 import cn.kebabshell.xiafan_demo.common.dto.PicInfoDTO;
@@ -47,18 +48,22 @@ public class PicServiceImpl implements PicService {
 
     @Override
     @Transactional
-    public PicInfoDTO addPic(PicInfoDTO picInfoDTO) {
-        Pic pic = picInfoDTO.getPic();
+    public PicAddDTO addPic(PicAddDTO picAddDTO) {
+        Pic pic = new Pic();
+        pic.setName(picAddDTO.getName());
+        pic.setPath(picAddDTO.getPath());
+        pic.setInfo(picAddDTO.getInfo());
+        pic.setUserId(picAddDTO.getUserId());
         pic.setCreateTime(new Date());
         picMapper.insertSelective(pic);
         PicSort picSort = new PicSort();
         picSort.setCreateTime(pic.getCreateTime());
         picSort.setPicId(pic.getId());
-        picSort.setSortId(picInfoDTO.getSortId());
+        picSort.setSortId(picAddDTO.getSortId());
         picSortMapper.insertSelective(picSort);
 
-        picInfoDTO.setPic(pic);
-        return picInfoDTO;
+        picAddDTO.setId(pic.getId());
+        return picAddDTO;
     }
 
     @Override
@@ -156,6 +161,18 @@ public class PicServiceImpl implements PicService {
         PicLikeExample.Criteria criteria1 = picLikeExample.createCriteria();
         criteria1.andPicIdEqualTo(picId);
         long likeCount = picLikeMapper.countByExample(picLikeExample);
+        //有没有点赞
+        boolean isLike = false;
+        if (userId != null && userId != 0){
+            PicLikeExample picLikeExample1 = new PicLikeExample();
+            PicLikeExample.Criteria criteria5 = picLikeExample1.createCriteria();
+            criteria5.andUserIdEqualTo(userId)
+                    .andPicIdEqualTo(picId);
+            int size = picLikeMapper.selectByExample(picLikeExample1).size();
+            if (size > 0){
+                isLike = true;
+            }
+        }
         //我是否有关注ta
         boolean isFollow = false;
         if (userId != null && userId != 0) {
@@ -180,7 +197,7 @@ public class PicServiceImpl implements PicService {
         return new PicInfoDTO(pic, userName,
                 sortId, sortName, likeCount,
                 isFollow, hitCount, commentCount,
-                avatarPath);
+                avatarPath, isLike);
     }
 
     @Override
@@ -192,10 +209,41 @@ public class PicServiceImpl implements PicService {
     }
 
     @Override
+    public List<PicBriefDTO> getPicBriefLimitByAuthorUserIdByRoot(Long authorId, Long userId, int pageNum, int pageCount) {
+        return null;
+    }
+
+    @Override
+    public List<PicBriefDTO> getPicBriefLimitByAuthorUserId(Long authorId, Long userId, int pageNum, int pageCount) {
+        PicExample picExample = new PicExample();
+        picExample.setOrderByClause("id desc");
+        picExample.setStart((pageNum - 1) * pageCount);
+        picExample.setCount(pageCount);
+        PicExample.Criteria criteria = picExample.createCriteria();
+        criteria.andUserIdEqualTo(authorId)
+            .andEffectiveEqualTo(true);
+        List<Pic> pics = picMapper.selectByExample(picExample);
+
+        List<PicBriefDTO> picBriefDTOS = new LinkedList<>();
+        for (Pic pic : pics) {
+            PicInfoDTO picInfo = getPicInfoByRoot(userId, pic.getId());
+
+            picBriefDTOS.add(new PicBriefDTO(pic.getId(), pic.getUserId(),
+                    picInfo.getUserName(), picInfo.isFollow(), pic.getName(),
+                    pic.getPath(), picInfo.getHitCount(), picInfo.getSortId(),
+                    picInfo.getSortName(), picInfo.getCommentCount(),
+                    picInfo.getLikeCount()));
+        }
+        return picBriefDTOS;
+    }
+
+    @Override
     public List<PicBriefDTO> getPicBriefLimitByRoot(Long userId, int pageNum, int pageCount) {
         PicExample picExample = new PicExample();
+
+        picExample.setOrderByClause("id desc");
         //设置分页
-        picExample.setStart(pageNum - 1);
+        picExample.setStart((pageNum - 1) * pageCount);
         picExample.setCount(pageCount);
 
         List<Pic> pics = picMapper.selectByExample(picExample);
@@ -217,9 +265,11 @@ public class PicServiceImpl implements PicService {
     @Override
     public List<PicBriefDTO> getPicBriefLimit(Long userId, int pageNum, int pageCount) {
         PicExample picExample = new PicExample();
+
+        picExample.setOrderByClause("id desc");
         //设置分页
         if (pageCount != 0){
-            picExample.setStart(pageNum - 1);
+            picExample.setStart((pageNum - 1) * pageCount);
             picExample.setCount(pageCount);
         }
         PicExample.Criteria picExampleCriteria = picExample.createCriteria();
@@ -256,8 +306,10 @@ public class PicServiceImpl implements PicService {
     public List<PicCommentDTO> getPicCommentLimitByRoot(Long picId, int pageNum, int pageCount) {
         PicCommentExample picCommentExample = new PicCommentExample();
         //分页
-        picCommentExample.setStart(pageNum - 1);
+        picCommentExample.setStart((pageNum - 1) * pageCount);
         picCommentExample.setCount(pageCount);
+
+        picCommentExample.setOrderByClause("id desc");
 
         PicCommentExample.Criteria criteria = picCommentExample.createCriteria();
         criteria.andPicIdEqualTo(picId);
@@ -283,8 +335,9 @@ public class PicServiceImpl implements PicService {
     @Override
     public List<PicHits> getPicHitsByRoot(Long picId, int pageNum, int pageCount) {
         PicHitsExample picHitsExample = new PicHitsExample();
+        picHitsExample.setOrderByClause("id desc");
         //分页
-        picHitsExample.setStart(pageNum - 1);
+        picHitsExample.setStart((pageNum - 1) * pageCount);
         picHitsExample.setCount(pageCount);
 
         PicHitsExample.Criteria criteria = picHitsExample.createCriteria();
@@ -325,8 +378,9 @@ public class PicServiceImpl implements PicService {
     @Override
     public List<PicBriefDTO> getPicInSort(Long userId, Long sortId, int pageNum, int pageCount) {
         PicSortExample picSortExample = new PicSortExample();
+        picSortExample.setOrderByClause("id desc");
         //分页
-        picSortExample.setStart(pageNum - 1);
+        picSortExample.setStart((pageNum - 1) * pageCount);
         picSortExample.setCount(pageCount);
         PicSortExample.Criteria criteria = picSortExample.createCriteria();
         criteria.andSortIdEqualTo(sortId);
@@ -339,6 +393,22 @@ public class PicServiceImpl implements PicService {
             picBriefDTOS.add(picBriefByPicId);
         }
         return picBriefDTOS;
+    }
+
+    @Override
+    public boolean addLike(PicLike picLike) {
+        picLike.setCreateTime(new Date());
+        return picLikeMapper.insertSelective(picLike) > 0;
+    }
+
+    @Override
+    public boolean delLike(PicLike picLike) {
+        PicLikeExample picLikeExample = new PicLikeExample();
+        PicLikeExample.Criteria criteria = picLikeExample.createCriteria();
+        criteria.andPicIdEqualTo(picLike.getPicId())
+                .andUserIdEqualTo(picLike.getUserId());
+        int i = picLikeMapper.deleteByExample(picLikeExample);
+        return i > 0;
     }
 
     private PicBriefDTO getPicBriefByPicId(Long userId, Long picId){

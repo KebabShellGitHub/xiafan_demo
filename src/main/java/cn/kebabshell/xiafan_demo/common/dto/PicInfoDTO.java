@@ -21,8 +21,9 @@ public class PicInfoDTO {
     private Long sortId;
     private String sortName;
     private long likeCount;
-    private boolean isFollow;
+    private boolean follow;
     private long hitCount;
     private long commentCount;
     private String avatarPath;
+    private boolean like;
 }

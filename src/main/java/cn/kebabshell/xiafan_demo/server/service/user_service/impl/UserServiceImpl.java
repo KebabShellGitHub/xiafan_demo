@@ -2,6 +2,8 @@ package cn.kebabshell.xiafan_demo.server.service.user_service.impl;
 
 import cn.kebabshell.xiafan_demo.common.custom.UserAuth;
 import cn.kebabshell.xiafan_demo.common.custom.RoleAuth;
+import cn.kebabshell.xiafan_demo.common.dto.UserBriefDTO;
+import cn.kebabshell.xiafan_demo.common.dto.UserDetailDTO;
 import cn.kebabshell.xiafan_demo.common.mapper.*;
 import cn.kebabshell.xiafan_demo.common.pojo.*;
 import cn.kebabshell.xiafan_demo.handler.exception.MyRegisterException;
@@ -33,6 +35,32 @@ public class UserServiceImpl implements UserService {
     private AuthorityMapper authorityMapper;
     @Autowired
     private UserFollowMapper userFollowMapper;
+
+    @Override
+    public UserDetailDTO getUserByIdOrName(Long userId, String userName) {
+        User user;
+        if (userId != null) {
+            user = userMapper.selectByPrimaryKey(userId);
+        }else if (userName != null){
+            UserExample userExample = new UserExample();
+            UserExample.Criteria criteria = userExample.createCriteria();
+            criteria.andNameEqualTo(userName);
+            user = userMapper.selectByExample(userExample).get(0);
+        }else {
+            user = null;
+        }
+        UserFollowExample userFollowExample = new UserFollowExample();
+        UserFollowExample.Criteria criteria = userFollowExample.createCriteria();
+        criteria.andUserIdEqualTo(userId);
+        long follows = userFollowMapper.countByExample(userFollowExample);
+
+        UserFollowExample userFollowExample1 = new UserFollowExample();
+        UserFollowExample.Criteria criteria1 = userFollowExample1.createCriteria();
+        criteria1.andFollowedUserIdEqualTo(userId);
+        long fans = userFollowMapper.countByExample(userFollowExample1);
+
+        return new UserDetailDTO(user, fans, follows);
+    }
 
     @Override
     public User findByName(String username) {
@@ -95,7 +123,7 @@ public class UserServiceImpl implements UserService {
         userRole.setRoleId(2L);
         userRole.setCreateTime(date);
         int insert2 = userRoleMapper.insertSelective(userRole);
-        if (insert <= 0 || insert2 <= 0){
+        if (insert <= 0 || insert2 <= 0) {
             throw new MyRegisterException("insert error");
         }
         return user;
@@ -198,5 +226,13 @@ public class UserServiceImpl implements UserService {
                 .andFollowedUserIdEqualTo(followedUserId);
         userFollowMapper.deleteByExample(userFollowExample);
         return true;
+    }
+
+    @Override
+    public List<UserBriefDTO> getUsersInRole(Long roleId, int pageNum, int pageCount) {
+        List<UserBriefDTO> list = new LinkedList<>();
+
+
+        return null;
     }
 }

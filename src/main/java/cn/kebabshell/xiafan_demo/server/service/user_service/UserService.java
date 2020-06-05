@@ -1,6 +1,8 @@
 package cn.kebabshell.xiafan_demo.server.service.user_service;
 
 import cn.kebabshell.xiafan_demo.common.custom.UserAuth;
+import cn.kebabshell.xiafan_demo.common.dto.UserBriefDTO;
+import cn.kebabshell.xiafan_demo.common.dto.UserDetailDTO;
 import cn.kebabshell.xiafan_demo.common.pojo.User;
 
 import java.util.List;
@@ -10,6 +12,13 @@ import java.util.List;
  * on 2020/4/25 下午 02:27
  */
 public interface UserService {
+    /**
+     *
+     * @param userId
+     * @param userName
+     * @return
+     */
+    UserDetailDTO getUserByIdOrName(Long userId, String userName);
     /**
      * 根据用户名找user
      * @param username
@@ -82,4 +91,13 @@ public interface UserService {
      * @return
      */
     boolean delFollow(Long userId, Long followedUserId);
+
+    /**
+     * 拿到属于某个角色的用户
+     * @param roleId
+     * @param pageNum
+     * @param pageCount
+     * @return
+     */
+    List<UserBriefDTO> getUsersInRole(Long roleId, int pageNum, int pageCount);
 }
